@@ -1,0 +1,43 @@
+services:
+  evote-app:
+    image: auth:1.0.2
+    ports:
+      - "3914:3000"
+    networks:
+      - evote.network
+    depends_on:
+      - evote-db
+
+  evote-db:
+    image: mysql:9.0
+    env_file: ./evote-db/.env
+    volumes:
+      - ./evote-db/data:/var/lib/mysql
+    networks:
+      - evote.network
+    ports:
+      - "41618:3306"
+
+  evote-gateaway:
+    image: kong:latest
+    volumes:
+      - ./kong.yml:/usr/local/kong/declarative/kong.yml
+    environment:
+      - KONG_DATABASE=off
+      - KONG_DECLARATIVE_CONFIG=/usr/local/kong/declarative/kong.yml
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8444:8444"
+    networks:
+      - evote.network
+
+networks:
+  evote.network:
+    driver: bridge

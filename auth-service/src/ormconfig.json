@@ -1,0 +1,13 @@
+[
+  {
+    "name": "default",
+    "type": "mysql",
+    "host": "localhost",
+    "port": 41618,
+    "username": "evote_user",
+    "password": "hk#kwj14!UAp9BE6sNjXZMhQhQ@X23v@",
+    "database": "",
+    "synchronize": false,
+    "entities": ["entities/*.js"]
+  }
+]
